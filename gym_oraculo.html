@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Oráculo - Plan de Entrenamiento</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --black: #111111;
+    --gray-800: #333333;
+    --gray-600: #555555;
+    --gray-500: #777777;
+    --gray-400: #999999;
+    --gray-300: #bbbbbb;
+    --gray-200: #dddddd;
+    --gray-100: #f0f0f0;
+    --white: #ffffff;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 30px rgba(0,0,0,0.1);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  body { font-family:'Inter',-apple-system,sans-serif; background:var(--white); color:var(--gray-800); min-height:100vh; }
+
+  .header { text-align:center; padding:48px 24px 32px; }
+  .logo-container { display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:8px; }
+  .logo-icon { width:56px; height:56px; }
+  .logo-text { font-family:'Playfair Display',serif; font-size:38px; font-weight:900; letter-spacing:6px; color:var(--black); text-transform:uppercase; }
+  .subtitle { font-size:12px; font-weight:500; letter-spacing:4px; color:var(--gray-400); text-transform:uppercase; margin-top:4px; }
+  .divider { width:60px; height:2px; background:var(--gray-200); margin:24px auto 0; }
+
+  .container { max-width:1200px; margin:0 auto; padding:0 24px 60px; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  .form-section,.calendar-section { animation:fadeUp 0.6s ease; }
+
+  .section-title { font-size:11px; font-weight:700; letter-spacing:3px; color:var(--gray-400); text-transform:uppercase; margin-bottom:20px; padding-left:4px; }
+
+  .card { background:var(--white); border:1px solid var(--gray-100); border-radius:var(--radius); padding:32px; margin-bottom:24px; box-shadow:var(--shadow-sm); transition:box-shadow 0.3s; }
+  .card:hover { box-shadow:var(--shadow-md); }
+
+  .form-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; }
+  .form-group { display:flex; flex-direction:column; }
+  .form-group label { font-size:11px; font-weight:600; letter-spacing:1.5px; color:var(--gray-500); text-transform:uppercase; margin-bottom:8px; }
+  .form-group input,.form-group select { padding:12px 16px; border:1.5px solid var(--gray-200); border-radius:var(--radius-sm); font-family:'Inter',sans-serif; font-size:14px; font-weight:500; color:var(--gray-800); background:var(--white); transition:border-color 0.2s,box-shadow 0.2s; appearance:none; -webkit-appearance:none; }
+  .form-group select { background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23999' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; padding-right:36px; cursor:pointer; }
+  .form-group input:focus,.form-group select:focus { outline:none; border-color:var(--gray-800); box-shadow:0 0 0 3px rgba(0,0,0,0.05); }
+  .form-group input::placeholder { color:var(--gray-300); font-weight:400; }
+  .name-input { grid-column:1/-1; }
+  .name-input input { font-size:18px; font-weight:600; padding:14px 16px; letter-spacing:0.5px; }
+
+  .pill-group { display:flex; flex-direction:column; grid-column:1/-1; }
+  .pill-group label { font-size:11px; font-weight:600; letter-spacing:1.5px; color:var(--gray-500); text-transform:uppercase; margin-bottom:10px; }
+  .pills { display:flex; flex-wrap:wrap; gap:10px; }
+  .pill { padding:10px 20px; border:1.5px solid var(--gray-200); border-radius:50px; font-family:'Inter',sans-serif; font-size:13px; font-weight:500; color:var(--gray-500); background:var(--white); cursor:pointer; transition:all 0.2s; user-select:none; }
+  .pill:hover { border-color:var(--gray-400); color:var(--gray-800); }
+  .pill.active { background:var(--black); color:var(--white); border-color:var(--black); }
+
+  .btn-generate { display:block; width:100%; padding:18px; background:var(--black); color:var(--white); border:none; border-radius:var(--radius-sm); font-family:'Inter',sans-serif; font-size:14px; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all 0.3s; margin-top:8px; }
+  .btn-generate:hover { background:var(--gray-800); transform:translateY(-1px); box-shadow:var(--shadow-lg); }
+
+  .calendar-section { display:none; }
+  .calendar-section.visible { display:block; }
+
+  .calendar-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:16px; }
+  .calendar-header h2 { font-family:'Playfair Display',serif; font-size:28px; font-weight:800; color:var(--black); }
+
+  .user-badge { display:flex; align-items:center; gap:12px; background:var(--gray-100); padding:10px 20px; border-radius:50px; }
+  .user-badge .badge-icon { width:32px; height:32px; background:var(--black); border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .user-badge .badge-icon svg { width:16px; height:16px; }
+  .user-badge-info { display:flex; flex-direction:column; }
+  .user-badge-name { font-size:13px; font-weight:700; color:var(--black); }
+  .user-badge-detail { font-size:11px; color:var(--gray-500); }
+
+  .stats-bar { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:12px; margin-bottom:20px; }
+  .stat-item { background:var(--gray-100); border-radius:var(--radius-sm); padding:16px; text-align:center; }
+  .stat-value { font-size:20px; font-weight:800; color:var(--black); line-height:1; }
+  .stat-label { font-size:10px; font-weight:600; letter-spacing:1px; color:var(--gray-400); text-transform:uppercase; margin-top:4px; }
+
+  /* ── FORMAT SWITCHER (inside calendar) ── */
+  .format-switcher {
+    display:none;
+    margin-bottom:20px;
+    padding:20px 24px;
+    background:var(--gray-100);
+    border-radius:var(--radius);
+  }
+  .format-switcher.visible { display:block; }
+  .format-switcher label { font-size:11px; font-weight:700; letter-spacing:2px; color:var(--gray-500); text-transform:uppercase; display:block; margin-bottom:10px; }
+  .format-switcher .pills .pill { background:var(--white); }
+
+  /* ── HORIZONTAL CALENDAR ── */
+  .week-calendar { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
+  .week-day { border:1px solid var(--gray-100); border-radius:var(--radius-sm); overflow:hidden; min-height:340px; display:flex; flex-direction:column; transition:box-shadow 0.3s,transform 0.2s; }
+  .week-day:hover { box-shadow:var(--shadow-md); transform:translateY(-2px); }
+  .week-day.rest { opacity:0.5; }
+  .week-day-header { padding:12px 10px; text-align:center; border-bottom:1px solid var(--gray-100); }
+  .week-day-name { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:var(--black); }
+  .week-day-tag { display:inline-block; font-size:9px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; padding:3px 8px; border-radius:50px; margin-top:6px; }
+  .week-day-tag.strength { background:#111; color:#fff; }
+  .week-day-tag.cardio { background:#444; color:#fff; }
+  .week-day-tag.hiit { background:#666; color:#fff; }
+  .week-day-tag.hybrid { background:#333; color:#fff; }
+  .week-day-tag.hyrox { background:#222; color:#fff; }
+  .week-day-tag.rest-tag { background:var(--gray-100); color:var(--gray-400); }
+  .week-day-body { flex:1; padding:10px; overflow-y:auto; }
+  .ex-row { display:flex; align-items:flex-start; gap:8px; padding:6px 0; border-bottom:1px solid var(--gray-100); }
+  .ex-row:last-child { border-bottom:none; }
+  .ex-num { width:20px; height:20px; min-width:20px; background:var(--gray-100); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:var(--gray-500); margin-top:1px; }
+  .ex-info { flex:1; }
+  .ex-name { font-size:12px; font-weight:600; color:var(--gray-800); line-height:1.3; }
+  .ex-detail { font-size:10px; color:var(--gray-400); margin-top:1px; }
+  .rest-message { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--gray-400); text-align:center; padding:20px 10px; }
+  .rest-icon { font-size:24px; filter:grayscale(100%); opacity:0.5; margin-bottom:6px; }
+  .rest-text { font-size:11px; font-weight:500; line-height:1.5; }
+
+  .coach-footer { margin-top:32px; text-align:center; padding:24px; border-top:1px solid var(--gray-100); }
+  .coach-label { font-size:10px; font-weight:600; letter-spacing:2px; color:var(--gray-400); text-transform:uppercase; }
+  .coach-name { font-size:18px; font-weight:800; color:var(--black); margin-top:4px; }
+
+  .actions { display:flex; gap:12px; margin-top:24px; justify-content:center; flex-wrap:wrap; }
+  .btn-action { padding:12px 28px; border:1.5px solid var(--gray-200); border-radius:50px; font-family:'Inter',sans-serif; font-size:12px; font-weight:600; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:all 0.2s; background:var(--white); color:var(--gray-600); }
+  .btn-action:hover { border-color:var(--black); color:var(--black); }
+  .btn-action.primary { background:var(--black); color:var(--white); border-color:var(--black); }
+  .btn-action.primary:hover { background:var(--gray-800); }
+
+  @media print {
+    body { background:#fff; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .form-section, .actions, .format-switcher { display:none !important; }
+    .calendar-section { display:block !important; }
+    .week-day:hover { transform:none; box-shadow:none; }
+    .header { padding:20px; }
+    .week-calendar { gap:4px; }
+    .week-day { min-height:280px; break-inside:avoid; }
+    .container { max-width:100%; padding:0 12px 20px; }
+  }
+
+  @media (max-width:900px) { .week-calendar { grid-template-columns:repeat(3,1fr); } }
+  @media (max-width:640px) {
+    .logo-text { font-size:26px; letter-spacing:4px; }
+    .card { padding:20px; }
+    .form-grid { grid-template-columns:1fr 1fr; }
+    .week-calendar { grid-template-columns:1fr 1fr; }
+    .pills { gap:8px; }
+    .pill { padding:8px 14px; font-size:12px; }
+    .stats-bar { grid-template-columns:repeat(3,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-container">
+    <svg class="logo-icon" viewBox="0 0 56 56" fill="none">
+      <circle cx="28" cy="28" r="27" stroke="#111" stroke-width="2"/>
+      <path d="M28 10 C20 18, 14 24, 14 32 C14 40, 20 46, 28 46 C36 46, 42 40, 42 32 C42 24, 36 18, 28 10Z" fill="none" stroke="#111" stroke-width="1.8"/>
+      <circle cx="28" cy="30" r="5" fill="#111"/>
+      <line x1="28" y1="14" x2="28" y2="22" stroke="#111" stroke-width="1.5"/>
+    </svg>
+    <span class="logo-text">El Oráculo</span>
+  </div>
+  <p class="subtitle">Fitness & Performance</p>
+  <div class="divider"></div>
+</div>
+
+<div class="container">
+
+  <!-- ━━ FORM ━━ -->
+  <div class="form-section" id="formSection">
+    <p class="section-title">Datos del Atleta</p>
+    <div class="card">
+      <div class="form-grid">
+        <div class="form-group name-input">
+          <label>Nombre completo</label>
+          <input type="text" id="nombre" placeholder="Nombre del atleta">
+        </div>
+        <div class="form-group"><label>Edad</label><input type="number" id="edad" placeholder="28" min="14" max="80"></div>
+        <div class="form-group"><label>Estatura (cm)</label><input type="number" id="estatura" placeholder="175" min="100" max="220"></div>
+        <div class="form-group"><label>Peso (kg)</label><input type="number" id="peso" placeholder="78" min="30" max="200"></div>
+        <div class="form-group"><label>% Grasa Corporal</label><input type="number" id="grasa" placeholder="18" min="3" max="50" step="0.1"></div>
+        <div class="form-group"><label>Días por semana</label>
+          <select id="dias"><option value="3">3 días</option><option value="4">4 días</option><option value="5" selected>5 días</option><option value="6">6 días</option></select>
+        </div>
+        <div class="form-group"><label>Coach</label>
+          <select id="coach"><option value="">Seleccionar coach</option><option value="Charly">Charly</option><option value="Caro">Caro</option><option value="Max">Max</option><option value="Armando">Armando</option></select>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title">Objetivo</p>
+    <div class="card">
+      <div class="pill-group">
+        <label>Selecciona uno o más objetivos</label>
+        <div class="pills multi" id="objetivoPills">
+          <div class="pill" data-value="musculo">Subir Músculo</div>
+          <div class="pill" data-value="grasa">Bajar Grasa</div>
+          <div class="pill" data-value="volumen">Volumen</div>
+          <div class="pill" data-value="condicion">Condición Física</div>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:16px;">
+        <label>Otro objetivo (opcional)</label>
+        <input type="text" id="objetivoCustom" placeholder="Ej: Rehabilitación, Flexibilidad, Competencia...">
+      </div>
+    </div>
+
+    <p class="section-title">Enfoque de Entrenamiento</p>
+    <div class="card">
+      <div class="pill-group">
+        <label>Estilo de entrenamiento</label>
+        <div class="pills" id="enfoquePills">
+          <div class="pill" data-value="pesas">Pesas</div>
+          <div class="pill" data-value="hyrox">Hyrox</div>
+          <div class="pill" data-value="hybrid">Hybrid</div>
+          <div class="pill" data-value="cardio">Cardio</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-generate" onclick="generarCalendario()">Generar Plan Semanal</button>
+  </div>
+
+  <!-- ━━ CALENDAR ━━ -->
+  <div class="calendar-section" id="calendarSection">
+    <div class="calendar-header">
+      <h2>Plan Semanal</h2>
+      <div class="user-badge">
+        <div class="badge-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="user-badge-info">
+          <span class="user-badge-name" id="badgeName">-</span>
+          <span class="user-badge-detail" id="badgeDetail">-</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-bar" id="statsBar"></div>
+
+    <!-- Format switcher - only for Pesas -->
+    <div class="format-switcher" id="formatSwitcher">
+      <label>Formato de Entrenamiento</label>
+      <div class="pills" id="formatoPillsCal">
+        <div class="pill" data-value="fullbody">Full Body</div>
+        <div class="pill" data-value="ppl">Push / Pull / Legs</div>
+        <div class="pill" data-value="upperlower">Upper / Lower</div>
+        <div class="pill" data-value="brosplit">1 Músculo por Día</div>
+      </div>
+    </div>
+
+    <div class="week-calendar" id="weekCalendar"></div>
+
+    <div class="coach-footer">
+      <div class="coach-label">Programado por</div>
+      <div class="coach-name" id="coachDisplay">-</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-action" onclick="volver()">Editar datos</button>
+      <button class="btn-action primary" onclick="exportPDF()">Exportar PDF</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── STATE ──
+let STATE = {};
+
+// ── PILL SELECTION ──
+document.querySelectorAll('.pills').forEach(group => {
+  const isMulti = group.classList.contains('multi');
+  group.querySelectorAll('.pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      if (isMulti) {
+        pill.classList.toggle('active');
+      } else {
+        group.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+      }
+    });
+  });
+});
+
+// Format switcher inside calendar - regenerate on click
+document.querySelectorAll('#formatoPillsCal .pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('#formatoPillsCal .pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    STATE.formato = pill.dataset.value;
+    renderCalendar();
+  });
+});
+
+function getSelected(id) { const e=document.querySelector(`#${id} .pill.active`); return e?e.dataset.value:''; }
+function getSelectedMulti(id) { return Array.from(document.querySelectorAll(`#${id} .pill.active`)).map(e=>e.dataset.value); }
+
+// ── DB ──
+const DB = {
+  pesas: {
+    fullbody: {
+      a:{tag:'Full Body A',cls:'strength',ex:[{n:'Sentadilla Trasera',d:'4x8'},{n:'Press Banca',d:'4x8'},{n:'Remo con Barra',d:'4x10'},{n:'Press Militar',d:'3x10'},{n:'Curl Bíceps',d:'3x12'},{n:'Plancha',d:'3x45s'}]},
+      b:{tag:'Full Body B',cls:'strength',ex:[{n:'Peso Muerto',d:'4x6'},{n:'Press Inclinado',d:'4x10'},{n:'Dominadas',d:'4x max'},{n:'Zancadas',d:'3x12 c/p'},{n:'Face Pulls',d:'3x15'},{n:'Ab Wheel',d:'3x10'}]},
+      c:{tag:'Full Body C',cls:'strength',ex:[{n:'Sentadilla Frontal',d:'4x8'},{n:'Fondos Lastrados',d:'4x10'},{n:'Remo Mancuerna',d:'4x10 c/l'},{n:'Hip Thrust',d:'4x12'},{n:'Elev. Laterales',d:'3x15'},{n:'Farmer Walk',d:'3x40m'}]}
+    },
+    ppl: {
+      push:{tag:'Push',cls:'strength',ex:[{n:'Press Banca',d:'4x8'},{n:'Press Inclinado DB',d:'4x10'},{n:'Press Militar',d:'4x8'},{n:'Elev. Laterales',d:'4x15'},{n:'Fondos',d:'3x12'},{n:'Tríceps Polea',d:'3x15'}]},
+      pull:{tag:'Pull',cls:'strength',ex:[{n:'Peso Muerto',d:'4x5'},{n:'Dominadas',d:'4x8'},{n:'Remo Barra',d:'4x8'},{n:'Face Pulls',d:'3x15'},{n:'Curl Barra',d:'4x10'},{n:'Curl Martillo',d:'3x12'}]},
+      legs:{tag:'Legs',cls:'strength',ex:[{n:'Sentadilla Trasera',d:'5x5'},{n:'Prensa 45°',d:'4x12'},{n:'Peso Muerto Rumano',d:'4x10'},{n:'Zancadas Búlgaras',d:'3x10 c/p'},{n:'Ext. Cuádriceps',d:'3x15'},{n:'Gemelo Prensa',d:'4x15'}]}
+    },
+    upperlower: {
+      upper:{tag:'Upper Body',cls:'strength',ex:[{n:'Press Banca',d:'4x8'},{n:'Remo Barra',d:'4x8'},{n:'Press Militar',d:'4x10'},{n:'Dominadas',d:'3x max'},{n:'Curl + Tríceps',d:'3x12 SS'},{n:'Face Pulls',d:'3x15'}]},
+      lower:{tag:'Lower Body',cls:'strength',ex:[{n:'Sentadilla Trasera',d:'5x5'},{n:'Peso Muerto Rumano',d:'4x10'},{n:'Hip Thrust',d:'4x12'},{n:'Zancadas',d:'3x12 c/p'},{n:'Curl Femoral',d:'3x12'},{n:'Gemelo de Pie',d:'4x15'}]}
+    },
+    brosplit: {
+      pecho:{tag:'Pecho',cls:'strength',ex:[{n:'Press Banca',d:'4x8'},{n:'Press Inclinado DB',d:'4x10'},{n:'Aperturas Polea',d:'3x12'},{n:'Fondos',d:'3x max'},{n:'Pullover',d:'3x12'},{n:'Flexiones',d:'3x fallo'}]},
+      espalda:{tag:'Espalda',cls:'strength',ex:[{n:'Peso Muerto',d:'5x5'},{n:'Dominadas',d:'4x max'},{n:'Remo Pendlay',d:'4x8'},{n:'Remo DB',d:'3x10 c/l'},{n:'Jalón Pecho',d:'3x12'},{n:'Encogimientos',d:'4x15'}]},
+      piernas:{tag:'Piernas',cls:'strength',ex:[{n:'Sentadilla',d:'5x5'},{n:'Prensa',d:'4x12'},{n:'P. Muerto Rumano',d:'4x10'},{n:'Zancadas',d:'3x12 c/p'},{n:'Ext+Curl',d:'3x15 SS'},{n:'Gemelo',d:'5x15'}]},
+      hombros:{tag:'Hombros',cls:'strength',ex:[{n:'Press Militar',d:'4x8'},{n:'Elev. Laterales',d:'5x15'},{n:'Pájaros',d:'4x15'},{n:'Press Arnold',d:'3x10'},{n:'Face Pulls',d:'3x15'},{n:'Encogimientos',d:'4x12'}]},
+      brazos:{tag:'Brazos',cls:'strength',ex:[{n:'Curl Barra EZ',d:'4x10'},{n:'Tríceps Francés',d:'4x10'},{n:'Curl Martillo',d:'3x12'},{n:'Fondos Tríceps',d:'3x12'},{n:'Curl Concentrado',d:'3x10'},{n:'Kickbacks',d:'3x12'}]}
+    }
+  },
+  hyrox: {
+    run_ski:{tag:'Run + Ski',cls:'hyrox',ex:[{n:'Carrera 1km',d:'Moderado'},{n:'Ski Erg',d:'1000m'},{n:'Carrera 1km',d:'Progresiva'},{n:'Sled Push',d:'4x25m'},{n:'Carrera 800m',d:'Tempo'},{n:'Burpee Broad Jump',d:'4x8'}]},
+    sled_wb:{tag:'Sled + WB',cls:'hyrox',ex:[{n:'Carrera 1km',d:'Tempo'},{n:'Sled Pull',d:'4x25m'},{n:'Carrera 1km',d:'Progresiva'},{n:'Wall Balls',d:'100 reps'},{n:'Rowing',d:'1000m'},{n:'Farmers Carry',d:'4x50m'}]},
+    strength:{tag:'Fuerza',cls:'hyrox',ex:[{n:'Peso Muerto',d:'4x6'},{n:'Sentadilla',d:'4x8'},{n:'Hip Thrust',d:'4x10'},{n:'Zancadas',d:'3x12 c/p'},{n:'KB Swings',d:'4x20'},{n:'Core Circuit',d:'3 rondas'}]},
+    endurance:{tag:'Resistencia',cls:'hyrox',ex:[{n:'Carrera 5km',d:'Constante'},{n:'Assault Bike',d:'3x3 min'},{n:'Remo 2000m',d:'Constante'},{n:'Box Step-ups',d:'4x25'},{n:'Lunges Walk',d:'4x50m'},{n:'Plancha',d:'3x1 min'}]}
+  },
+  hybrid: {
+    str:{tag:'Fuerza',cls:'hybrid',ex:[{n:'Sentadilla',d:'5x5'},{n:'Press Banca',d:'5x5'},{n:'Remo Barra',d:'4x8'},{n:'Press Militar',d:'4x8'},{n:'Core',d:'3 series'}]},
+    cond:{tag:'Conditioning',cls:'hybrid',ex:[{n:'Carrera 3km',d:'Tempo'},{n:'AMRAP 12min',d:'5PU+10Push+15Sq'},{n:'Assault Bike',d:'5x1 min'},{n:'Remo',d:'500m x3'},{n:'Movilidad',d:'15 min'}]},
+    upper:{tag:'Upper + Met',cls:'hybrid',ex:[{n:'Dominadas Lastr.',d:'5x5'},{n:'Press Inclinado',d:'4x8'},{n:'Remo DB',d:'4x10 c/l'},{n:'Fondos',d:'3x max'},{n:'Ski Erg',d:'5x250m'}]},
+    lower:{tag:'Lower + Cardio',cls:'hybrid',ex:[{n:'Peso Muerto',d:'5x3'},{n:'Box Jumps',d:'4x8'},{n:'Sled Push/Pull',d:'4x20m'},{n:'KB Goblet Sq',d:'3x15'},{n:'Bike Sprint',d:'8x20s/40s'}]}
+  },
+  cardio: {
+    liss:{tag:'LISS',cls:'cardio',ex:[{n:'Carrera Continua',d:'40-50 min Z2'},{n:'Estiramientos',d:'10 min'},{n:'Core Isométrico',d:'3x45s'}]},
+    hiit:{tag:'HIIT',cls:'cardio',ex:[{n:'Sprint Intervalos',d:'10x30s/60s'},{n:'Assault Bike',d:'8x20s/10s'},{n:'Box Jumps',d:'4x12'},{n:'Battle Ropes',d:'4x30s'},{n:'Burpees',d:'3x15'}]},
+    endurance:{tag:'Resistencia',cls:'cardio',ex:[{n:'Carrera 5-8km',d:'Progresivo'},{n:'Remo',d:'3000m'},{n:'Bicicleta',d:'30 min'}]},
+    intervals:{tag:'Intervalos',cls:'cardio',ex:[{n:'Fartlek Run',d:'30 min'},{n:'Ski Erg',d:'6x250m'},{n:'Escalera EMOM',d:'20 min'},{n:'Jump Rope',d:'5x2 min'},{n:'Mt. Climbers',d:'4x40s'}]}
+  }
+};
+
+const DAYS = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+
+function generarCalendario() {
+  const nombre = document.getElementById('nombre').value.trim()||'Atleta';
+  const edad = document.getElementById('edad').value||'-';
+  const estatura = document.getElementById('estatura').value||'-';
+  const peso = document.getElementById('peso').value||'-';
+  const grasa = document.getElementById('grasa').value||'-';
+  const dias = parseInt(document.getElementById('dias').value);
+  const coach = document.getElementById('coach').value||'-';
+  const objetivos = getSelectedMulti('objetivoPills');
+  const custom = document.getElementById('objetivoCustom').value.trim();
+  if(custom) objetivos.push(custom);
+  const enfoque = getSelected('enfoquePills');
+
+  if(!objetivos.length||!enfoque){alert('Selecciona al menos un objetivo y un enfoque.');return;}
+
+  STATE = {nombre,edad,estatura,peso,grasa,dias,coach,objetivos,enfoque,formato:'fullbody'};
+
+  // Show/hide format switcher
+  const sw = document.getElementById('formatSwitcher');
+  if(enfoque==='pesas'){
+    sw.classList.add('visible');
+    // Default to fullbody
+    document.querySelectorAll('#formatoPillsCal .pill').forEach(p=>p.classList.remove('active'));
+    document.querySelector('#formatoPillsCal .pill[data-value="fullbody"]').classList.add('active');
+  } else {
+    sw.classList.remove('visible');
+  }
+
+  renderCalendar();
+
+  document.getElementById('formSection').style.display='none';
+  document.getElementById('calendarSection').classList.add('visible');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderCalendar() {
+  const {nombre,edad,estatura,peso,grasa,dias,coach,objetivos,enfoque,formato} = STATE;
+  const objLabel = objetivos.map(capitalize).join(' + ');
+
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat-item"><div class="stat-value">${edad}</div><div class="stat-label">Años</div></div>
+    <div class="stat-item"><div class="stat-value">${estatura}</div><div class="stat-label">cm</div></div>
+    <div class="stat-item"><div class="stat-value">${peso}</div><div class="stat-label">kg</div></div>
+    <div class="stat-item"><div class="stat-value">${grasa}%</div><div class="stat-label">Grasa</div></div>
+    <div class="stat-item"><div class="stat-value">${dias}</div><div class="stat-label">Días/Sem</div></div>
+    <div class="stat-item"><div class="stat-value">${capitalize(enfoque)}</div><div class="stat-label">Enfoque</div></div>`;
+
+  document.getElementById('badgeName').textContent = nombre;
+  document.getElementById('badgeDetail').textContent = `${objLabel} · ${capitalize(enfoque)}${enfoque==='pesas'?' · '+fmtLabel(formato):''}`;
+  document.getElementById('coachDisplay').textContent = `Coach ${coach}`;
+
+  const plan = buildPlan(dias, enfoque, formato);
+  const cal = document.getElementById('weekCalendar');
+  cal.innerHTML = '';
+
+  DAYS.forEach((day,i) => {
+    const s = plan[i];
+    const col = document.createElement('div');
+    col.className = `week-day${s.rest?' rest':''}`;
+
+    if(s.rest){
+      col.innerHTML = `<div class="week-day-header"><div class="week-day-name">${day}</div><div class="week-day-tag rest-tag">Descanso</div></div><div class="week-day-body"><div class="rest-message"><div class="rest-icon">&#9788;</div><div class="rest-text">Recuperación<br>Movilidad</div></div></div>`;
+    } else {
+      const exH = s.exercises.map((e,j)=>`<div class="ex-row"><div class="ex-num">${j+1}</div><div class="ex-info"><div class="ex-name">${e.n}</div><div class="ex-detail">${e.d}</div></div></div>`).join('');
+      col.innerHTML = `<div class="week-day-header"><div class="week-day-name">${day}</div><div class="week-day-tag ${s.cls}">${s.tag}</div></div><div class="week-day-body">${exH}</div>`;
+    }
+    cal.appendChild(col);
+  });
+}
+
+function buildPlan(dias,enfoque,formato) {
+  const week = Array(7).fill(null).map(()=>({rest:true}));
+  const td = {3:[0,2,4],4:[0,1,3,4],5:[0,1,2,3,4],6:[0,1,2,3,4,5]}[dias]||[0,1,2,3,4];
+  let pool;
+
+  if(enfoque==='pesas'){
+    pool = DB.pesas[formato];
+  } else {
+    pool = DB[enfoque];
+  }
+
+  const keys = Object.keys(pool);
+  td.forEach((dayIdx,i) => {
+    const s = pool[keys[i%keys.length]];
+    week[dayIdx] = {rest:false, tag:s.tag, cls:s.cls, exercises:s.ex};
+  });
+  return week;
+}
+
+function exportPDF() {
+  document.title = `Plan_${STATE.nombre.replace(/\s+/g,'_')}_ElOraculo`;
+  window.print();
+}
+
+function capitalize(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
+function fmtLabel(f){return{fullbody:'Full Body',ppl:'Push/Pull/Legs',upperlower:'Upper/Lower',brosplit:'1 Músculo/Día'}[f]||f;}
+
+function volver() {
+  document.getElementById('calendarSection').classList.remove('visible');
+  document.getElementById('formSection').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
